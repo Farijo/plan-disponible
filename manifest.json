@@ -3,14 +3,11 @@
   "version": "1.0",
   "description": "Build an Extension!",
     "permissions": [
-        "tabs",
-        "notifications",
-        "http://*/",
-        "https://*/",
-		"declarativeContent",
-		"activeTab"
+      "tabs",
+      "activeTab"
     ],
   "browser_action": {
+    "browser_style": true,
     "default_popup": "popup.html",
     "default_icon": {
       "16": "images/item_bplan_c.png",
