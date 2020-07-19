@@ -1,7 +1,7 @@
 {
-  "name": "Getting Started Example",
+  "name": "Plan disponible",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "Tous les plans qui vous pouvez ouvrir sur Hordes.fr !",
     "permissions": [
       "tabs",
       "activeTab"
