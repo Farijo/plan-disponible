@@ -28,7 +28,7 @@ let countUnactive = null;
 function im(src) {
 	let r = '';
 	for(s of src) {
-		r += '<img src="'+s+'"/>';
+		r += `<img src="${s}"/>`;
 	}
 	return r;
 }
@@ -106,16 +106,28 @@ document.addEventListener('DOMContentLoaded', function() {
 		countUnactive = [{all:0,b:0,m:0,h:0}, {all:0,b:0,m:0,h:0}, {all:0,b:0,m:0,h:0}, {all:0,b:0,m:0,h:0}];
 		
 		let val = '<table id="det">';
-		for(b in buildings) {
-			val += getBuilding(page, b, buildings[b]);
+		for(const buil in buildings) {
+			val += getBuilding(page, buil, buildings[buil]);
 		}
 		val += '</table>';
 		
-		document.getElementById('content').innerHTML = '<p>Informations générales : </p><p><input type="checkbox" id="bunker" checked><label for="bunker">Bunker</label><input type="checkbox" id="hopital" checked><label for="hopital">Hôpital</label><input type="checkbox" id="hotel"checked><label for="hotel">Hotel</label><br><button>Formatage forum</button></p><br><p>Chantiers pouvant être découvert : </p>' + getCountDisplay(count) + '<br><p>Chantiers bloqués : </p>' + getCountDisplay(countUnactive) + '<br><p>Détails : </p>' + val;
+		document.getElementById('content').innerHTML = '<p>Informations générales : </p><p><input type="checkbox" id="bunker" checked><label for="bunker">Bunker</label><input type="checkbox" id="hopital" checked><label for="hopital">Hôpital</label><input type="checkbox" id="hotel"checked><label for="hotel">Hotel</label><br><button id="cpy-paste">Formatage forum</button></p><br><p>Chantiers pouvant être découvert : </p>' + getCountDisplay(count) + '<br><p>Chantiers bloqués : </p>' + getCountDisplay(countUnactive) + '<br><p>Détails : </p>' + val;
 		
-		document.getElementById('bunker').addEventListener('change', hider);
-		document.getElementById('hopital').addEventListener('change', hider);
-		document.getElementById('hotel').addEventListener('change', hider);
+		const b = document.getElementById('bunker');
+		const h = document.getElementById('hopital');
+		const m = document.getElementById('hotel');
+    b.addEventListener('change', hider);
+    h.addEventListener('change', hider);
+    m.addEventListener('change', hider);
+    
+    document.getElementById('cpy-paste').addEventListener('click', function() {
+      const o = {b: 'Bunker', h: 'Hôpital', m: 'Hôtel'};
+      if(!b.checked) delete o.b;
+      if(!h.checked) delete o.h;
+      if(!m.checked) delete o.m;
+      const text = getCpy(count, countUnactive, o);
+      navigator.clipboard.writeText(text);
+    });
 	});
 }, false);
 
@@ -128,7 +140,46 @@ function hider(event) {
 }
 
 function getCpy(c, cu, ruins) {
-	return ':hordes_plan: Etat des plans :hordes_plan:\n\n:hordes_fleche:\nRestant à trouver :\n:hordes_*: //'+(c[0].all+cu[0].all)+' commun//\n:hordes_*: //'+(c[1].all+cu[1].all)+' inhabituel//\n:hordes_*: //2 rare//\n:hordes_*: //1 épique//\n\n\n:hordes_fleche: A ne pas ouvrir :\n:hordes_*: //0 inhabituel//';
+  const o = ['', '', '', ''];
+  const p = ['', '', '', ''];
+  const names = ['commun', 'inhabituel', 'rare', 'épique'];
+  
+  for(let i=0; i<4; i++) {
+    if(c[i].all === 0 && cu[i].all > 0) {
+      p[i] = `\n *//${names[i]}// `;
+    }
+    const m = c[i].all+cu[i].all;
+    if(m > 0) {
+      o[i] = `\n *//${m} ${names[i]}// `;
+    }
+    for(r in ruins) {
+      if(c[i][r] === 0 && cu[i][r] > 0) {
+        if(!p[i]) {
+          p[i] = `\n *//${names[i]}// `;
+        }
+        p[i] += `\n:hordes_ruine_5: **${ruins[r]}**`;
+      }
+      const n = c[i][r]+cu[i][r];
+      if(n > 0) {
+        o[i] += `\n:hordes_ruine_5: **${n} ${ruins[r]}**`;
+      }
+    }
+  }
+  
+  let notOpen = p.join('');
+  if(notOpen) {
+    notOpen = '\n\n\n:hordes_fleche: A ne pas ouvrir : ' + notOpen;
+  }
+  
+  let toFound = o.join('');
+  if(toFound) {
+    toFound = '\n\n\n:hordes_fleche:Restant à trouver :\n' + toFound;
+  } else {
+    toFound = '\n\n\n:hordes_explo: Tous est découvert félicitation ! :hordes_winbas_2:'
+  }
+  
+	let ret = `:hordes_plan: Etat des plans :hordes_plan:${toFound}${notOpen}`;
+  return ret;
 }
 
 
