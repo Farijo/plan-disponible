@@ -86,12 +86,12 @@ function getBuilding(str, n, o) {
 }
 
 function getCountDisplay(c) {
-	return '<table style="text-align:end;"><tr style="font-size: 1.4em"><td>' + c[0].all + '</td><td style="text-align:start">' + im([ruinPlan[0][0]]) + '</td><td>' + c[1].all + '</td><td>' + im([ruinPlan[1][0]]) + '</td><td>' + c[2].all + '</td><td>' + im([ruinPlan[2][0]]) + '</td><td>' + c[3].all + '</td><td>' + im([ruinPlan[3][0]]) + '</td></tr><tr class="bunker"><td colspan="2">Bunker</td><td>' + c[1].b + '</td><td>' + im([ruinPlan[1][1]]) + '</td><td>' + c[2].b + '</td><td>' + im([ruinPlan[2][1]]) + '</td><td>' + c[3].b + '</td><td>' + im([ruinPlan[3][1]]) + '</td></tr><tr class="hopital"><td colspan="2">Hôpital</td><td>' + c[1].h + '</td><td>' + im([ruinPlan[1][2]]) + '</td><td>' + c[2].h + '</td><td>' + im([ruinPlan[2][2]]) + '</td><td>' + c[3].h + '</td><td>' + im([ruinPlan[3][2]]) + '</td></tr><tr class="hotel"><td colspan="2">Hotel</td><td>' + c[1].m + '</td><td>' + im([ruinPlan[1][3]]) + '</td><td>' + c[2].m + '</td><td>' + im([ruinPlan[2][3]]) + '</td><td>' + c[3].m + '</td><td>' + im([ruinPlan[3][3]]) + '</td></tr></table>';
+	return '<table class="count"><tr style="font-size: 1.4em"><td>' + c[0].all + '</td><td style="text-align:start">' + im([ruinPlan[0][0]]) + '</td><td>' + c[1].all + '</td><td>' + im([ruinPlan[1][0]]) + '</td><td>' + c[2].all + '</td><td>' + im([ruinPlan[2][0]]) + '</td><td>' + c[3].all + '</td><td>' + im([ruinPlan[3][0]]) + '</td></tr><tr class="bunker"><td colspan="2">Bunker</td><td>' + c[1].b + '</td><td>' + im([ruinPlan[1][1]]) + '</td><td>' + c[2].b + '</td><td>' + im([ruinPlan[2][1]]) + '</td><td>' + c[3].b + '</td><td>' + im([ruinPlan[3][1]]) + '</td></tr><tr class="hopital"><td colspan="2">Hôpital</td><td>' + c[1].h + '</td><td>' + im([ruinPlan[1][2]]) + '</td><td>' + c[2].h + '</td><td>' + im([ruinPlan[2][2]]) + '</td><td>' + c[3].h + '</td><td>' + im([ruinPlan[3][2]]) + '</td></tr><tr class="hotel"><td colspan="2">Hotel</td><td>' + c[1].m + '</td><td>' + im([ruinPlan[1][3]]) + '</td><td>' + c[2].m + '</td><td>' + im([ruinPlan[2][3]]) + '</td><td>' + c[3].m + '</td><td>' + im([ruinPlan[3][3]]) + '</td></tr></table>';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
 	chrome.tabs.executeScript(null, {
-		code: `document.getElementsByTagName('body')[0].innerText`,
+		code: `document.body.innerText`,
 		allFrames: false,
 		runAt: 'document_start',
 	}, function(results) {
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		val += '</table>';
 		
-		document.getElementById('content').innerHTML = '<p>Informations générales : </p><input type="checkbox" id="bunker" checked><label for="bunker">Bunker</label><input type="checkbox" id="hopital" checked><label for="hopital">Hôpital</label><input type="checkbox" id="hotel"checked><label for="hotel">Hotel</label><br><button>Copier statut pour le forum</button><br><br><p>Chantiers pouvant être découvert : </p>' + getCountDisplay(count) + '<br><p>Chantiers bloqués : </p>' + getCountDisplay(countUnactive) + '<br><p>Détails : </p>' + val;
+		document.getElementById('content').innerHTML = '<p>Informations générales : </p><p><input type="checkbox" id="bunker" checked><label for="bunker">Bunker</label><input type="checkbox" id="hopital" checked><label for="hopital">Hôpital</label><input type="checkbox" id="hotel"checked><label for="hotel">Hotel</label><br><button>Formatage forum</button></p><br><p>Chantiers pouvant être découvert : </p>' + getCountDisplay(count) + '<br><p>Chantiers bloqués : </p>' + getCountDisplay(countUnactive) + '<br><p>Détails : </p>' + val;
 		
 		document.getElementById('bunker').addEventListener('change', hider);
 		document.getElementById('hopital').addEventListener('change', hider);
@@ -122,11 +122,21 @@ document.addEventListener('DOMContentLoaded', function() {
 function hider(event) {
 	const all  = document.getElementsByClassName(event.target.id);
 	const prop = event.target.checked ? '' : 'none';
-	for (var i = 0; i < all.length; i++) {
-		all[i].style.display = prop;
+	for (e of all) {
+		e.style.display = prop;
 	}
 }
 
-function getCpy(c, cu) {
+function getCpy(c, cu, ruins) {
 	return ':hordes_plan: Etat des plans :hordes_plan:\n\n:hordes_fleche:\nRestant à trouver :\n:hordes_*: //'+(c[0].all+cu[0].all)+' commun//\n:hordes_*: //'+(c[1].all+cu[1].all)+' inhabituel//\n:hordes_*: //2 rare//\n:hordes_*: //1 épique//\n\n\n:hordes_fleche: A ne pas ouvrir :\n:hordes_*: //0 inhabituel//';
 }
+
+
+
+
+
+
+
+
+
+
