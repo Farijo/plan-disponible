@@ -56,7 +56,7 @@ buildings = {
 			"Crémato-Cue": {"type": 9}
 		}
 	},
-	"Fixations de défenses": {"type": 14},
+	"Fixations de défense": {"type": 14},
 	"Canon à briques": {"type": 0},
 	"Perforeuse": {"type": 0},
 	"Lance-Grenailles": {"type": 0},
